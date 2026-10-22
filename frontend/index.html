@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DevFix AI — AI-Powered Debugging and Verification Platform. Diagnose. Explain. Fix. Verify.">
+  <title>DevFix AI — Debugging & Verification Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="app-body">
+  <!-- Layout Wrapper -->
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#4F8CFF"/>
+          </svg>
+          <div class="brand-info">
+            <span class="brand-name">DevFix <span class="accent-text">AI</span></span>
+            <span class="brand-tagline">Debug & Verify</span>
+          </div>
+        </div>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close menu">✕</button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Main Navigation">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <button class="nav-link active" data-view="dashboard" id="navDashboard">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="9" rx="1"/>
+                <rect x="14" y="3" width="7" height="5" rx="1"/>
+                <rect x="14" y="12" width="7" height="9" rx="1"/>
+                <rect x="3" y="16" width="7" height="5" rx="1"/>
+              </svg>
+              <span>Dashboard</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-view="new-session" id="navNewSession">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="16"/>
+                <line x1="8" y1="12" x2="16" y2="12"/>
+              </svg>
+              <span>New Debug Session</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-view="history" id="navHistory">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span>Debugging History</span>
+              <span class="nav-badge" id="historyCountBadge">0</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-view="settings" id="navSettings">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              <span>Settings</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Workflow Status -->
+      <div class="sidebar-session-widget" id="activeSessionWidget" style="display: none;">
+        <div class="widget-header">
+          <span class="widget-title">Active Session</span>
+          <span class="widget-step-pill" id="activeSessionStep">Draft</span>
+        </div>
+        <div class="widget-body">
+          <p class="widget-session-name" id="activeSessionTitle">ZeroDivisionError fix</p>
+          <button class="btn btn-xs btn-outline" id="resumeActiveSessionBtn">Resume Workflow →</button>
+        </div>
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="workspace-pill">
+          <span class="status-dot dot-enabled"></span>
+          <span class="workspace-text">Python debugging workspace</span>
+        </div>
+        <div class="backend-connection-indicator" id="sidebarBackendStatus">
+          <span class="status-dot dot-offline"></span>
+          <span class="connection-label">Backend: <strong id="sidebarBackendLabel">Checking...</strong></span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Top Header / App Bar -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <div class="breadcrumbs" id="appBreadcrumbs">
+            <span class="crumb-root">DevFix AI</span>
+            <span class="crumb-separator">/</span>
+            <span class="crumb-current" id="currentCrumb">Dashboard</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="demo-mode-badge" id="demoModeBadge" title="Live backend offline. Demonstrating workflow via local Python engine.">
+            <span class="badge-icon">ℹ️</span>
+            <span>Demo Mode (Backend Offline)</span>
+          </div>
+          <button class="btn btn-sm btn-primary" id="headerStartBtn">
+            <span>+ New Session</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Scrollable Content -->
+      <main class="content-container">
+
+        <!-- ========================================== -->
+        <!-- VIEW 1: DASHBOARD -->
+        <!-- ========================================== -->
+        <section class="view-panel active" id="viewDashboard">
+          <div class="dashboard-hero">
+            <div class="hero-text">
+              <h1 class="hero-title">Diagnose. Explain. Fix. Verify.</h1>
+              <p class="hero-subtitle">
+                An evidence-backed debugging workflow for developers. We separate verified code fixes from unconfirmed AI suggestions through controlled execution.
+              </p>
+            </div>
+            <div class="hero-actions">
+              <button class="btn btn-primary btn-lg" id="dashStartDebugBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <span>Start Debugging Session</span>
+              </button>
+              <button class="btn btn-secondary btn-lg" id="dashLoadSampleBtn">
+                <span>Load Sample Python Bug</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Statistics Cards (Calculated dynamically) -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-label">Total Sessions</span>
+                <span class="stat-icon icon-neutral">📋</span>
+              </div>
+              <div class="stat-value" id="statTotalSessions">0</div>
+              <p class="stat-desc">All debugging sessions stored</p>
+            </div>
+            <div class="stat-card stat-verified">
+              <div class="stat-header">
+                <span class="stat-label">Verified Fixes</span>
+                <span class="stat-icon icon-success">✓</span>
+              </div>
+              <div class="stat-value" id="statVerified">0</div>
+              <p class="stat-desc">Passed all controlled tests</p>
+            </div>
+            <div class="stat-card stat-failed">
+              <div class="stat-header">
+                <span class="stat-label">Failed Verifications</span>
+                <span class="stat-icon icon-danger">✕</span>
+              </div>
+              <div class="stat-value" id="statFailed">0</div>
+              <p class="stat-desc">Fixes that broke tests or errored</p>
+            </div>
+            <div class="stat-card stat-unverified">
+              <div class="stat-header">
+                <span class="stat-label">Unverified Proposals</span>
+                <span class="stat-icon icon-warning">⏳</span>
+              </div>
+              <div class="stat-value" id="statUnverified">0</div>
+              <p class="stat-desc">Pending test or unverified</p>
+            </div>
+          </div>
+
+          <div class="dashboard-columns">
+            <!-- Recent Sessions Column -->
+            <div class="panel-card col-span-2">
+              <div class="panel-header">
+                <div class="panel-title-group">
+                  <h2 class="panel-title">Recent Debugging Sessions</h2>
+                  <span class="panel-subtitle">History from your active workspace</span>
+                </div>
+                <button class="btn btn-sm btn-ghost" id="dashViewAllHistoryBtn">View All History →</button>
+              </div>
+              <div class="panel-body">
+                <div class="recent-sessions-list" id="recentSessionsList">
+                  <!-- Injected dynamically by JS -->
+                  <div class="empty-state">
+                    <p class="empty-state-title">No debugging sessions recorded yet</p>
+                    <p class="empty-state-desc">Submit your first Python traceback to begin evidence-based diagnosis.</p>
+                    <button class="btn btn-sm btn-primary" id="emptyStateStartBtn">Start First Session</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Language Roadmap Column -->
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title-group">
+                  <h2 class="panel-title">Multi-Language Roadmap</h2>
+                  <span class="panel-subtitle">Modular language adapter support</span>
+                </div>
+              </div>
+              <div class="panel-body">
+                <ul class="roadmap-list" id="languageRoadmapList">
+                  <!-- Injected from language-config.js -->
+                </ul>
+                <div class="roadmap-note">
+                  <small>
+                    <strong>Architectural Note:</strong> Python is the only enabled language in initial release. Unsupported languages cannot be executed and will not claim verification.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: NEW DEBUG SESSION (Input Form) -->
+        <!-- ========================================== -->
+        <section class="view-panel" id="viewNewSession">
+          <div class="workflow-stepper">
+            <div class="step-item active" id="stepperInput">
+              <span class="step-num">1</span>
+              <span class="step-label">Submit Error</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item" id="stepperDiagnose">
+              <span class="step-num">2</span>
+              <span class="step-label">Diagnosis</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item" id="stepperFix">
+              <span class="step-num">3</span>
+              <span class="step-label">Proposed Fix</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item" id="stepperVerify">
+              <span class="step-num">4</span>
+              <span class="step-label">Verification</span>
+            </div>
+          </div>
+
+          <div class="panel-card session-form-card">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">New Debugging Session</h2>
+                <span class="panel-subtitle">Paste your source code and error traceback for evidence-backed root cause analysis</span>
+              </div>
+              <div class="header-tools">
+                <button type="button" class="btn btn-sm btn-secondary" id="loadSampleCaseBtn">
+                  <span>📂 Load Sample Case</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-ghost" id="resetFormBtn">
+                  <span>↺ Reset Form</span>
+                </button>
+              </div>
+            </div>
+
+            <form id="debugSessionForm" class="debug-form" novalidate>
+              <!-- Validation Alert Banner -->
+              <div class="alert-banner alert-danger" id="formValidationAlert" style="display: none;">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content" id="formValidationMessage">Please provide source code and traceback.</div>
+                <button type="button" class="btn btn-xs btn-primary" id="alertLoadSampleBtn" style="margin-left: auto;">Load Sample Case</button>
+                <button type="button" class="alert-close" id="closeValidationAlertBtn">✕</button>
+              </div>
+
+              <!-- Language Selector Section -->
+              <div class="form-group">
+                <label class="form-label">
+                  Programming Language
+                  <span class="label-hint">(Python is enabled; other adapters coming soon)</span>
+                </label>
+                <div class="language-cards-grid" id="languageSelectorGrid">
+                  <!-- Populated by language-config.js -->
+                </div>
+              </div>
+
+              <!-- Editor Split: Code and Traceback -->
+              <div class="editor-grid">
+                <!-- Source Code Input -->
+                <div class="form-group code-input-group">
+                  <div class="input-header">
+                    <label class="form-label" for="sourceCodeInput">
+                      Source Code <span class="required-mark">*</span>
+                    </label>
+                    <span class="input-counter" id="codeLineCounter">0 lines</span>
+                  </div>
+                  <div class="code-editor-wrapper">
+                    <div class="line-numbers" id="codeLineNumbers">1</div>
+                    <textarea 
+                      id="sourceCodeInput" 
+                      class="code-textarea" 
+                      rows="14" 
+                      placeholder="def calculate_metric(data):&#10;    # Paste your Python code here&#10;    total = sum(data)&#10;    return total / len(data)"
+                      spellcheck="false"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <!-- Traceback Input -->
+                <div class="form-group traceback-input-group">
+                  <div class="input-header">
+                    <label class="form-label" for="tracebackInput">
+                      Error Message & Traceback <span class="required-mark">*</span>
+                    </label>
+                    <span class="input-badge">Standard Python Traceback</span>
+                  </div>
+                  <div class="code-editor-wrapper traceback-wrapper">
+                    <textarea 
+                      id="tracebackInput" 
+                      class="code-textarea traceback-textarea" 
+                      rows="14" 
+                      placeholder="Traceback (most recent call last):&#10;  File &quot;metrics.py&quot;, line 4, in calculate_metric&#10;    return total / len(data)&#10;ZeroDivisionError: division by zero"
+                      spellcheck="false"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Optional Context Field -->
+              <div class="form-group">
+                <label class="form-label" for="expectedBehaviorInput">
+                  Expected Behavior / Context <span class="optional-tag">(Optional)</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="expectedBehaviorInput" 
+                  class="form-input" 
+                  placeholder="e.g. When data is empty, the function should return 0.0 without raising ZeroDivisionError."
+                  maxlength="300"
+                >
+              </div>
+
+              <!-- Submit Footer -->
+              <div class="form-footer">
+                <div class="footer-privacy-note">
+                  🔒 Source code is only analyzed upon explicit submission. No sensitive tokens or secrets are stored remotely.
+                </div>
+                <div class="footer-actions">
+                  <button type="submit" class="btn btn-primary btn-lg" id="analyzeErrorBtn">
+                    <span class="btn-spinner" id="analyzeSpinner" style="display: none;"></span>
+                    <span id="analyzeBtnText">Analyze Error →</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: DIAGNOSIS RESULTS -->
+        <!-- ========================================== -->
+        <section class="view-panel" id="viewDiagnosis">
+          <div class="workflow-stepper">
+            <div class="step-item completed">
+              <span class="step-num">✓</span>
+              <span class="step-label">Submit Error</span>
+            </div>
+            <div class="step-line active"></div>
+            <div class="step-item active">
+              <span class="step-num">2</span>
+              <span class="step-label">Diagnosis</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item">
+              <span class="step-num">3</span>
+              <span class="step-label">Proposed Fix</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item">
+              <span class="step-num">4</span>
+              <span class="step-label">Verification</span>
+            </div>
+          </div>
+
+          <div class="diagnosis-container" id="diagnosisContent">
+            <!-- Dynamically populated by results.js -->
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 4: PROPOSED FIX REVIEW -->
+        <!-- ========================================== -->
+        <section class="view-panel" id="viewProposedFix">
+          <div class="workflow-stepper">
+            <div class="step-item completed">
+              <span class="step-num">✓</span>
+              <span class="step-label">Submit Error</span>
+            </div>
+            <div class="step-line active"></div>
+            <div class="step-item completed">
+              <span class="step-num">✓</span>
+              <span class="step-label">Diagnosis</span>
+            </div>
+            <div class="step-line active"></div>
+            <div class="step-item active">
+              <span class="step-num">3</span>
+              <span class="step-label">Proposed Fix</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item">
+              <span class="step-num">4</span>
+              <span class="step-label">Verification</span>
+            </div>
+          </div>
+
+          <div class="proposed-fix-container" id="proposedFixContent">
+            <!-- Dynamically populated by results.js -->
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 5: VERIFICATION RESULTS -->
+        <!-- ========================================== -->
+        <section class="view-panel" id="viewVerification">
+          <div class="workflow-stepper">
+            <div class="step-item completed">
+              <span class="step-num">✓</span>
+              <span class="step-label">Submit Error</span>
+            </div>
+            <div class="step-line active"></div>
+            <div class="step-item completed">
+              <span class="step-num">✓</span>
+              <span class="step-label">Diagnosis</span>
+            </div>
+            <div class="step-line active"></div>
+            <div class="step-item completed">
+              <span class="step-num">✓</span>
+              <span class="step-label">Proposed Fix</span>
+            </div>
+            <div class="step-line active"></div>
+            <div class="step-item active">
+              <span class="step-num">4</span>
+              <span class="step-label">Verification</span>
+            </div>
+          </div>
+
+          <div class="verification-container" id="verificationContent">
+            <!-- Dynamically populated by results.js -->
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 6: DEBUGGING HISTORY -->
+        <!-- ========================================== -->
+        <section class="view-panel" id="viewHistory">
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Debugging History</h2>
+                <span class="panel-subtitle">Review previous diagnoses, diffs, and verification test outputs</span>
+              </div>
+              <div class="header-tools">
+                <button type="button" class="btn btn-sm btn-outline-danger" id="clearAllHistoryBtn">
+                  <span>🗑 Clear All History</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="history-controls">
+              <div class="search-input-wrapper">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input 
+                  type="text" 
+                  id="historySearchInput" 
+                  class="form-input search-input" 
+                  placeholder="Search by error type, title, or filename..."
+                >
+              </div>
+
+              <div class="status-filter-group" id="historyStatusFilters">
+                <button class="filter-chip active" data-filter="all">All (<span id="filterCountAll">0</span>)</button>
+                <button class="filter-chip" data-filter="verified">Verified (<span id="filterCountVerified">0</span>)</button>
+                <button class="filter-chip" data-filter="failed">Failed (<span id="filterCountFailed">0</span>)</button>
+                <button class="filter-chip" data-filter="unverified">Unverified (<span id="filterCountUnverified">0</span>)</button>
+              </div>
+            </div>
+
+            <!-- History List Table / Cards -->
+            <div class="history-list-wrapper">
+              <div class="history-table-header">
+                <div class="col-session">Session & Error Type</div>
+                <div class="col-lang">Language</div>
+                <div class="col-date">Date & Time</div>
+                <div class="col-status">Verification Status</div>
+                <div class="col-actions">Actions</div>
+              </div>
+              <div class="history-items-container" id="historyItemsContainer">
+                <!-- Dynamically populated by history.js -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 7: SETTINGS -->
+        <!-- ========================================== -->
+        <section class="view-panel" id="viewSettings">
+          <div class="settings-grid">
+            <!-- Backend Status Card -->
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title-group">
+                  <h2 class="panel-title">Backend Connection Status</h2>
+                  <span class="panel-subtitle">Live health check against Python Flask server</span>
+                </div>
+                <button class="btn btn-sm btn-secondary" id="pingBackendBtn">
+                  <span>🔄 Ping Backend</span>
+                </button>
+              </div>
+              <div class="panel-body">
+                <div class="connection-status-box" id="settingsConnectionBox">
+                  <div class="status-indicator-row">
+                    <span class="status-dot dot-offline" id="settingsStatusDot"></span>
+                    <span class="status-status-text" id="settingsConnectionText">Not Connected (Flask Backend Offline)</span>
+                  </div>
+                  <p class="status-explanation" id="settingsConnectionDesc">
+                    The frontend is currently operating in <strong>Demonstration Mode</strong> using the built-in client engine. When the Flask backend is started on <code>http://localhost:5000</code>, real AST traceback extraction, AI model integration, and isolated test execution will become active.
+                  </p>
+                </div>
+
+                <div class="form-group" style="margin-top: 1rem;">
+                  <label class="form-label" for="backendUrlConfigInput">Flask API Endpoint URL</label>
+                  <div class="input-with-button">
+                    <input type="text" id="backendUrlConfigInput" class="form-input" value="http://localhost:5000">
+                    <button class="btn btn-secondary" id="saveBackendUrlBtn">Save URL</button>
+                  </div>
+                  <span class="form-help-text">Default endpoint for the planned Flask REST API.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Model Provider Status Card -->
+            <div class="panel-card">
+              <div class="panel-header">
+                <div class="panel-title-group">
+                  <h2 class="panel-title">AI Provider & Model</h2>
+                  <span class="panel-subtitle">Configurable AI integration interface</span>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div class="info-row">
+                  <span class="info-label">Active Provider:</span>
+                  <span class="info-val badge-neutral" id="settingsAiProvider">Planned: Ollama / Local LLM</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Model Status:</span>
+                  <span class="info-val badge-warning" id="settingsAiStatus">Backend Disconnected</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Selected Model:</span>
+                  <span class="info-val" id="settingsAiModel">llama3 / deepseek-coder (configurable via backend .env)</span>
+                </div>
+                <div class="callout-box">
+                  <strong>Architectural Rule:</strong> API keys and model tokens are strictly kept on the Flask backend. No secret credentials are ever exposed in frontend JavaScript or local storage.
+                </div>
+              </div>
+            </div>
+
+            <!-- Language Adapter Status Card -->
+            <div class="panel-card col-span-2">
+              <div class="panel-header">
+                <div class="panel-title-group">
+                  <h2 class="panel-title">Language Adapters Status</h2>
+                  <span class="panel-subtitle">Support matrix for multi-language architecture</span>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div class="table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Language</th>
+                        <th>Status</th>
+                        <th>Parser Strategy</th>
+                        <th>Verification Runner</th>
+                        <th>Target Version</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>Python</strong></td>
+                        <td><span class="status-pill pill-verified">● Enabled</span></td>
+                        <td>AST + Traceback Frame Parser</td>
+                        <td>Isolated Subprocess / Restricted PyTest</td>
+                        <td>v1.0 (Current)</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Java</strong></td>
+                        <td><span class="status-pill pill-unverified">○ Coming Soon</span></td>
+                        <td>StackTrace Parser + Javac AST</td>
+                        <td>JUnit 5 Sandbox Runner</td>
+                        <td>v1.1 (Roadmap)</td>
+                      </tr>
+                      <tr>
+                        <td><strong>C</strong></td>
+                        <td><span class="status-pill pill-unverified">○ Coming Soon</span></td>
+                        <td>GCC/Clang Diagnostics Parser</td>
+                        <td>Valgrind / Unity Test Runner</td>
+                        <td>v1.2 (Roadmap)</td>
+                      </tr>
+                      <tr>
+                        <td><strong>C++</strong></td>
+                        <td><span class="status-pill pill-unverified">○ Coming Soon</span></td>
+                        <td>G++ Template & ASan Parser</td>
+                        <td>GoogleTest Runner</td>
+                        <td>v1.2 (Roadmap)</td>
+                      </tr>
+                      <tr>
+                        <td><strong>JavaScript</strong></td>
+                        <td><span class="status-pill pill-unverified">○ Coming Soon</span></td>
+                        <td>V8 Error Stack Parser</td>
+                        <td>Isolated VM / Jest Runner</td>
+                        <td>v1.3 (Roadmap)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Data Governance & Privacy Card -->
+            <div class="panel-card col-span-2">
+              <div class="panel-header">
+                <div class="panel-title-group">
+                  <h2 class="panel-title">Privacy & Data Governance</h2>
+                  <span class="panel-subtitle">Transparent handling of your code and debugging sessions</span>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div class="privacy-grid">
+                  <div class="privacy-item">
+                    <h4>📂 Local Storage</h4>
+                    <p>Debugging sessions, drafts, and UI preferences are stored directly in your browser's <code>localStorage</code>. No telemetry or tracking scripts are loaded.</p>
+                  </div>
+                  <div class="privacy-item">
+                    <h4>🛡 Explicit Submission Only</h4>
+                    <p>Source code and tracebacks are never sent to any server in the background. Network requests are only dispatched when you explicitly click "Analyze Error" or "Verify".</p>
+                  </div>
+                  <div class="privacy-item">
+                    <h4>🔒 Controlled Verification</h4>
+                    <p>Code verification runs in isolated environments with resource limits, restricted filesystem access, and strict timeouts to prevent accidental side effects.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Global Modal Dialog (Used for Session Deletion Confirmation) -->
+  <div class="modal-backdrop" id="confirmationModal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Confirm Action</h3>
+        <button class="modal-close-btn" id="modalCloseBtn">✕</button>
+      </div>
+      <div class="modal-body" id="modalMessage">
+        Are you sure you want to proceed?
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modalCancelBtn">Cancel</button>
+        <button class="btn btn-danger" id="modalConfirmBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sample Selector Modal -->
+  <div class="modal-backdrop" id="samplePickerModal" style="display: none;">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">Select a Curated Python Bug Sample</h3>
+        <button class="modal-close-btn" id="samplePickerCloseBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-subtitle-text">Choose a realistic debugging scenario to explore the evidence-based workflow:</p>
+        <div class="sample-cards-list" id="sampleCardsList">
+          <!-- Populated by language-config.js -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="samplePickerCancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Application Scripts (ES Modules) -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
